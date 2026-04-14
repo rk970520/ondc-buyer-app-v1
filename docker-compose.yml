@@ -1,0 +1,11 @@
+services:
+  buyer-app:
+    image: ghcr.io/${GITHUB_REPOSITORY:-ondc-buyer-app}:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    env_file:
+      - .env

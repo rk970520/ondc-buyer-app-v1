@@ -1,0 +1,5 @@
+{
+  "name": "ONDC Buyer App",
+  "description": "A highly user-friendly ecommerce buyer app based on the ONDC protocol.",
+  "requestFramePermissions": []
+}
