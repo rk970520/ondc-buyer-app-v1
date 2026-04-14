@@ -72,11 +72,14 @@ jobs:
             docker stop ondc-buyer-app 2>/dev/null || true
             docker rm ondc-buyer-app 2>/dev/null || true
 
-            # Run the new container
+            # Run the new container with SSL volumes
             docker run -d \
               --name ondc-buyer-app \
               --restart unless-stopped \
               -p 80:80 \
+              -p 443:443 \
+              -v certbot-conf:/etc/letsencrypt \
+              -v certbot-www:/var/www/certbot \
               ${REGISTRY}/${IMAGE_NAME}:latest
 
             # Clean up old images

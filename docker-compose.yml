@@ -1,11 +1,25 @@
 services:
   buyer-app:
-    image: ghcr.io/${GITHUB_REPOSITORY:-ondc-buyer-app}:latest
+    image: ghcr.io/${GITHUB_REPOSITORY:-rk970520/ondc-buyer-app-v1}:latest
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - certbot-conf:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
     restart: unless-stopped
-    env_file:
-      - .env
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot-conf:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    restart: unless-stopped
+
+volumes:
+  certbot-conf:
+  certbot-www:
