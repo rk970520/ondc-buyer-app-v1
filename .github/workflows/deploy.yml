@@ -81,23 +81,11 @@ jobs:
 
             # Set up Apache vhost for buyer.baniya.app if not already configured
             if [ ! -f /etc/apache2/sites-available/buyer.baniya.app.conf ]; then
-              a2enmod proxy proxy_http ssl rewrite 2>/dev/null || true
+              a2enmod proxy proxy_http 2>/dev/null || true
 
               cat > /etc/apache2/sites-available/buyer.baniya.app.conf << 'VHOST'
             <VirtualHost *:80>
                 ServerName buyer.baniya.app
-                RewriteEngine On
-                RewriteCond %{HTTPS} off
-                RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
-            </VirtualHost>
-
-            <VirtualHost *:443>
-                ServerName buyer.baniya.app
-
-                SSLEngine on
-                SSLCertificateFile /etc/letsencrypt/live/buyer.baniya.app/fullchain.pem
-                SSLCertificateKeyFile /etc/letsencrypt/live/buyer.baniya.app/privkey.pem
-
                 ProxyPreserveHost On
                 ProxyPass / http://127.0.0.1:3080/
                 ProxyPassReverse / http://127.0.0.1:3080/
