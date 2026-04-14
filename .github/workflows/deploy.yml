@@ -79,22 +79,20 @@ jobs:
               -p 3080:80 \
               ${REGISTRY}/${IMAGE_NAME}:latest
 
-            # Set up Apache vhost for buyer.baniya.app if not already configured
-            if [ ! -f /etc/apache2/sites-available/buyer.baniya.app.conf ]; then
-              a2enmod proxy proxy_http 2>/dev/null || true
+            # Set up Apache vhost for buyer.baniya.store
+            a2enmod proxy proxy_http 2>/dev/null || true
 
-              cat > /etc/apache2/sites-available/buyer.baniya.app.conf << 'VHOST'
+            cat > /etc/apache2/sites-available/buyer.baniya.store.conf << 'VHOST'
             <VirtualHost *:80>
-                ServerName buyer.baniya.app
+                ServerName buyer.baniya.store
                 ProxyPreserveHost On
                 ProxyPass / http://127.0.0.1:3080/
                 ProxyPassReverse / http://127.0.0.1:3080/
             </VirtualHost>
             VHOST
 
-              a2ensite buyer.baniya.app.conf
-              systemctl reload apache2
-            fi
+            a2ensite buyer.baniya.store.conf 2>/dev/null || true
+            systemctl reload apache2
 
             # Clean up old images
             docker image prune -f
